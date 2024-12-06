@@ -38,7 +38,7 @@ const Post = ({ post }) => {
 			}
 		},
 		onSuccess: () => {
-			toast.success("Post deleted successfully");
+			toast.success("Submission deleted successfully");
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
 		},
 	});
@@ -98,7 +98,7 @@ const Post = ({ post }) => {
 			}
 		},
 		onSuccess: () => {
-			toast.success("Comment posted successfully");
+			toast.success("Reply sent successfully");
 			setComment("");
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
 		},
@@ -208,7 +208,7 @@ const Post = ({ post }) => {
 									>
 										<textarea
 											className='textarea w-full p-1 rounded text-md resize-none border focus:outline-none  border-gray-800'
-											placeholder='Add a comment...'
+											placeholder='Add a reply...'
 											value={comment}
 											onChange={(e) => setComment(e.target.value)}
 										/>

@@ -83,7 +83,7 @@ const NotificationPage = () => {
 								</div>
 								<div className='flex gap-1'>
 									<span className='font-bold'>@{notification.from.username}</span>{" "}
-									{notification.type === "follow" ? "followed you" : "liked your post"}
+									{notification.type === "Connect" ? "Joined your cause" : "sent a like"}
 								</div>
 							</Link>
 						</div>

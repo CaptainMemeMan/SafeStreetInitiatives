@@ -14,10 +14,16 @@ export default {
 			{
 				black: {
 					...daisyUIThemes["black"],
-					primary: "rgb(29, 155, 240)",
-					secondary: "rgb(24, 24, 24)",
-				},
-			},
-		],
-	},
+					primary: "rgb(255, 215, 0)",
+					secondary: "rgb(128, 0, 128)",
+				}
+			}
+		]
+	}
 };
+
+/*purple {
+	...daisyUIThemes["purple"],
+	primary: "rgb(255, 215, 0)",
+	secondary: "rbg (128, 0, 128)",
+}, */

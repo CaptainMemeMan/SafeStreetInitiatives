@@ -9,7 +9,6 @@ const EditProfileModal = ({ authUser }) => {
 		username: "",
 		email: "",
 		bio: "",
-		link: "",
 		newPassword: "",
 		currentPassword: "",
 	});
@@ -57,7 +56,6 @@ const EditProfileModal = ({ authUser }) => {
 				username: authUser.username || "",
 				email: authUser.email || "",
 				bio: authUser.bio || "",
-				link: authUser.link || "",
 				newPassword: "",
 				currentPassword: "",
 			});
@@ -143,16 +141,6 @@ const EditProfileModal = ({ authUser }) => {
 								onChange={handleInputChange}
 							/>
 						</div>
-
-						{/* Link */}
-						<input
-							type="text"
-							placeholder="Link"
-							className="flex-1 input border border-gray-700 rounded p-2 input-md"
-							value={formData.link}
-							name="link"
-							onChange={handleInputChange}
-						/>
 
 						{/* Submit Button */}
 						<button className="btn btn-primary rounded-full btn-sm text-white">

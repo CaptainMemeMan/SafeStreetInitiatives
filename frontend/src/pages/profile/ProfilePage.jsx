@@ -127,7 +127,7 @@ const ProfilePage = () => {
                         </Link>
                         <div className="flex flex-col">
                             <p className="font-bold text-lg">{user?.fullName}</p>
-                            <span className="text-sm text-slate-500">{POSTS?.length} posts</span>
+                            <span className="text-sm text-slate-500">{POSTS?.length} submissions</span>
                         </div>
                     </div>
                     <div className="relative group/cover">
@@ -201,36 +201,6 @@ const ProfilePage = () => {
                             <span className="text-sm my-1">{user?.bio}</span>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                            {isMyProfile ? (
-                                <div className="flex gap-1 items-center">
-                                    <FaLink className="w-3 h-3 text-slate-500" />
-                                    <input
-                                        type="text"
-                                        value={userLink}
-                                        onChange={(e) => setUserLink(e.target.value)}
-                                        className="text-sm text-blue-500 hover:underline bg-transparent border-b border-blue-500 focus:outline-none"
-                                        placeholder="Enter your link"
-                                    />
-                                    <button
-                                        className="btn btn-primary btn-sm ml-2"
-                                        onClick={() => updateProfile()}
-                                    >
-                                        Save Link
-                                    </button>
-                                </div>
-                            ) : (
-                                user?.link && (
-                                    <div className="flex gap-1 items-center">
-                                        <FaLink className="w-3 h-3 text-slate-500" />
-                                        <button
-                                            onClick={redirectToExternalPage}
-                                            className="text-sm text-blue-500 hover:underline"
-                                        >
-                                            {user?.link}
-                                        </button>
-                                    </div>
-                                )
-                            )}
                             <div className="flex gap-2 items-center">
                                 <IoCalendarOutline className="w-4 h-4 text-slate-500" />
                                 <span className="text-sm text-slate-500">{memberSinceDate}</span>
@@ -239,11 +209,11 @@ const ProfilePage = () => {
                         <div className="flex gap-2">
                             <div className="flex gap-1 items-center">
                                 <span className="font-bold text-xs">{user?.following.length}</span>
-                                <span className="text-slate-500 text-xs">Following</span>
+                                <span className="text-slate-500 text-xs">Your connections</span>
                             </div>
                             <div className="flex gap-1 items-center">
                                 <span className="font-bold text-xs">{user?.followers.length}</span>
-                                <span className="text-slate-500 text-xs">Followers</span>
+                                <span className="text-slate-500 text-xs">Your followers</span>
                             </div>
                         </div>
                     </div>
@@ -252,7 +222,7 @@ const ProfilePage = () => {
                             className="flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer"
                             onClick={() => setFeedType("posts")}
                         >
-                            Posts
+                            Submissons and Replies
                             {feedType === "posts" && (
                                 <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary" />
                             )}
@@ -261,7 +231,7 @@ const ProfilePage = () => {
                             className="flex justify-center flex-1 p-3 text-slate-500 hover:bg-secondary transition duration-300 relative cursor-pointer"
                             onClick={() => setFeedType("likes")}
                         >
-                            Likes
+                            <p>&#10084;</p>
                             {feedType === "likes" && (
                                 <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary" />
                             )}
