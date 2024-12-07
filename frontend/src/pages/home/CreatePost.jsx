@@ -1,17 +1,23 @@
 import { CiImageOn } from "react-icons/ci";
-import { BsEmojiSmileFill } from "react-icons/bs";
+import { TbMapPinDown } from "react-icons/tb";
 import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { LoadScriptNext, GoogleMap, Marker} from "@react-google-maps/api";
 
 const CreatePost = () => {
 	const [text, setText] = useState("");
 	const [img, setImg] = useState(null);
 	const imgRef = useRef(null);
+	const [isMapOpen, setIsMapOpen] = useState(false);
+    const [selectedPosition, setSelectedPosition] = useState(null);
+    const [address, setAddress] = useState("");
 
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
+
+	const apiKey = "API KEY"; // Replace with your API Key
 
 	const {
 		mutate: createPost,
@@ -19,14 +25,14 @@ const CreatePost = () => {
 		isError,
 		error,
 	} = useMutation({
-		mutationFn: async ({ text, img }) => {
+		mutationFn: async ({ text, img, address }) => {
 			try {
 				const res = await fetch("/api/posts/create", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ text, img }),
+					body: JSON.stringify({ text, img, address }),
 				});
 				const data = await res.json();
 				if (!res.ok) {
@@ -40,6 +46,7 @@ const CreatePost = () => {
 		onSuccess: () => {
 			setText("");
 			setImg(null);
+			setAddress("");
 			toast.success("Submission created successfully");
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
 		},
@@ -60,6 +67,23 @@ const CreatePost = () => {
 			reader.readAsDataURL(file);
 		}
 	};
+
+	const fetchAddress = async (lat, lng) => {
+        try {
+            const response = await fetch(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+            );
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                setAddress(data.results[0].formatted_address);
+            } else {
+                setAddress("Address not found");
+            }
+        } catch (error) {
+            console.error("Error fetching address:", error);
+            setAddress("Failed to fetch address");
+        }
+    };
 
 	return (
 		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
@@ -94,6 +118,15 @@ const CreatePost = () => {
 							className='fill-primary w-6 h-6 cursor-pointer'
 							onClick={() => imgRef.current.click()}
 						/>
+						<TbMapPinDown
+                            className="fill-primary w-5 h-5 cursor-pointer"
+                            onClick={() => setIsMapOpen(true)}
+                        />
+						{address && (
+                            <span className="text-sm text-gray-400 truncate max-w-xs">
+                                {address}
+                            </span>
+                        )}
 					</div>
 					<input type='file' accept='image/*' hidden ref={imgRef} onChange={handleImgChange} />
 					<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
@@ -102,6 +135,84 @@ const CreatePost = () => {
 				</div>
 				{isError && <div className='text-red-500'>{error.message}</div>}
 			</form>
+
+			{isMapOpen && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <div
+                        style={{
+                            backgroundColor: "white",
+                            padding: "20px",
+                            borderRadius: "10px",
+                            width: "80%",
+                            maxWidth: "600px",
+                        }}
+                    >
+                        <button
+                            onClick={() => setIsMapOpen(false)}
+                            style={{
+                                position: "absolute",
+                                top: "10px",
+                                right: "10px",
+                                background: "transparent",
+                                border: "none",
+                                fontSize: "16px",
+                                cursor: "pointer",
+                            }}
+                        >
+                            ✖
+                        </button>
+                        <LoadScriptNext googleMapsApiKey={apiKey}>
+                            <GoogleMap
+                                mapContainerStyle={{ width: "100%", height: "400px" }}
+                                center={{ lat: 42.3223, lng: -83.1763 }}
+                                zoom={13}
+								options={{
+									disableDefaultUI: true, // Disables default map UI
+									clickableIcons: false, // Prevents click behavior affecting icons
+									disableDoubleClickZoom: true, // Prevents map zoom on double-click
+								}}
+                                onClick={(event) => {
+                                    const lat = event.latLng.lat();
+                                    const lng = event.latLng.lng();
+                                    setSelectedPosition({ lat, lng });
+                                    fetchAddress(lat, lng);
+                                }}
+                            >
+                                {selectedPosition && (
+                                        <Marker
+                                            position={selectedPosition}
+                                            draggable={true}
+                                            onDragEnd={(event) => {
+                                                const lat = event.latLng.lat();
+                                                const lng = event.latLng.lng();
+                                                setSelectedPosition({ lat, lng });
+                                                fetchAddress(lat, lng);
+                                            }}
+                                        />
+                                    )}
+                                
+                                
+                            </GoogleMap>
+                        </LoadScriptNext>
+                    
+                    </div>
+                    
+                </div>
+            )}
+
+
 		</div>
 	);
 };
