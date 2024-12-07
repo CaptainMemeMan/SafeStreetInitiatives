@@ -7,6 +7,7 @@ export const createPost = async (req, res) => {
 	try {
 		const { text } = req.body;
 		let { img } = req.body;
+		const { address } = req.body;
 		const userId = req.user._id.toString();
 
 		const user = await User.findById(userId);
@@ -25,6 +26,7 @@ export const createPost = async (req, res) => {
 			user: userId,
 			text,
 			img,
+			address,
 		});
 
 		await newPost.save();
