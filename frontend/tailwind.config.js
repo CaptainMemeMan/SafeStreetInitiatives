@@ -13,17 +13,11 @@ export default {
 			"light",
 			{
 				black: {
-					...daisyUIThemes["black"],
+					...daisyUIThemes["aqua"],
 					primary: "rgb(255, 215, 0)",
-					secondary: "rgb(128, 0, 128)",
+					secondary: "rgb(0, 0, 0)",
 				}
 			}
 		]
 	}
 };
-
-/*purple {
-	...daisyUIThemes["purple"],
-	primary: "rgb(255, 215, 0)",
-	secondary: "rbg (128, 0, 128)",
-}, */
