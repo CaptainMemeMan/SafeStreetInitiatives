@@ -13,11 +13,16 @@ const CreatePost = () => {
 	const [isMapOpen, setIsMapOpen] = useState(false);
     const [selectedPosition, setSelectedPosition] = useState(null);
     const [address, setAddress] = useState("");
+	const [myLat, setLat] = useState("");
+	const [myLng, setLng] = useState("");
+	// Static default center
+    const defaultCenter = { lat: 42.3223, lng: -83.1763 };
+	
 
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
 
-	const apiKey = "API KEY"; // Replace with your API Key
+	const apiKey = "YOUR API KEY"; // Replace with your API Key
 
 	const {
 		mutate: createPost,
@@ -74,9 +79,11 @@ const CreatePost = () => {
                 `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
             );
             const data = await response.json();
+			console.log("Geocoding API Response:", data); // Log the full response
             if (data.results && data.results.length > 0) {
                 setAddress(data.results[0].formatted_address);
             } else {
+				console.error("No address found in API response");
                 setAddress("Address not found");
             }
         } catch (error) {
@@ -84,6 +91,7 @@ const CreatePost = () => {
             setAddress("Failed to fetch address");
         }
     };
+
 
 	return (
 		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
@@ -176,19 +184,18 @@ const CreatePost = () => {
                         <LoadScriptNext googleMapsApiKey={apiKey}>
                             <GoogleMap
                                 mapContainerStyle={{ width: "100%", height: "400px" }}
-                                center={{ lat: 42.3223, lng: -83.1763 }}
+                                center={defaultCenter}
                                 zoom={13}
-								options={{
-									disableDefaultUI: true, // Disables default map UI
-									clickableIcons: false, // Prevents click behavior affecting icons
-									disableDoubleClickZoom: true, // Prevents map zoom on double-click
-								}}
                                 onClick={(event) => {
                                     const lat = event.latLng.lat();
                                     const lng = event.latLng.lng();
+									setLat(event.latLng.lat());
+									setLng(event.latLng.lng());
                                     setSelectedPosition({ lat, lng });
                                     fetchAddress(lat, lng);
+									
                                 }}
+								
                             >
                                 {selectedPosition && (
                                         <Marker
@@ -196,9 +203,14 @@ const CreatePost = () => {
                                             draggable={true}
                                             onDragEnd={(event) => {
                                                 const lat = event.latLng.lat();
-                                                const lng = event.latLng.lng();
+												const lng = event.latLng.lng();
+												setLat(event.latLng.lat());
+                                                setLng(event.latLng.lng());
+												
+												
                                                 setSelectedPosition({ lat, lng });
                                                 fetchAddress(lat, lng);
+												
                                             }}
                                         />
                                     )}
