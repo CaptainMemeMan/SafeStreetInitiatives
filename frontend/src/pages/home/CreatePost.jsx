@@ -22,7 +22,8 @@ const CreatePost = () => {
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
 
-	const apiKey = "YOUR API KEY"; // Replace with your API Key
+	const api_key = "API_KEY";
+	
 
 	const {
 		mutate: createPost,
@@ -76,7 +77,7 @@ const CreatePost = () => {
 	const fetchAddress = async (lat, lng) => {
         try {
             const response = await fetch(
-                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${api_key}`
             );
             const data = await response.json();
 			console.log("Geocoding API Response:", data); // Log the full response
@@ -181,7 +182,7 @@ const CreatePost = () => {
                         >
                             ✖
                         </button>
-                        <LoadScriptNext googleMapsApiKey={apiKey}>
+                        <LoadScriptNext googleMapsApiKey={api_key}>
                             <GoogleMap
                                 mapContainerStyle={{ width: "100%", height: "400px" }}
                                 center={defaultCenter}
